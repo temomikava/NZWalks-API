@@ -43,6 +43,26 @@ namespace NZWalks_API.Repositories
             return region;
         }
 
+        public async Task<Region> DeleteAsync(Guid id)
+        {
+            var region=GetAsync(id).Result;
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                try
+                {
+                    var cmd = new NpgsqlCommand("deleteregion", connection) { CommandType = CommandType.StoredProcedure };
+                    cmd.Parameters.AddWithValue("_id", id);
+                    connection.Open();
+                    await cmd.ExecuteNonQueryAsync();
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(e.Message);
+                }
+            }
+            return region;
+        }
+
         public async Task<IEnumerable<Region>> GetAllAsync()
         {
             List<Region> regions = new List<Region>();

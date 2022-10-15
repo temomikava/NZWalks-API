@@ -30,7 +30,7 @@ namespace NZWalks_API.Controllers
         [ActionName("GetRegionAsync")]
         public async Task<IActionResult> GetRegionAsync(Guid id)
         {
-            var region = await regionRepository.GetAsync(id);
+            var region = await regionRepository.GetAsync(id); 
             if (region == null)
             {
                 return NotFound();
@@ -44,7 +44,7 @@ namespace NZWalks_API.Controllers
             var region = new Region()
             {
                 Code = addRegion.Code,
-                Name = addRegion.Name,
+                Name = addRegion.Name, 
                 Area = addRegion.Area,
                 Lat = addRegion.Lat,
                 Long = addRegion.Long,
@@ -52,6 +52,17 @@ namespace NZWalks_API.Controllers
             };
             var responce = await regionRepository.AddRegion(region);
             return CreatedAtAction(nameof(GetRegionAsync), new { id = responce.Id }, mapper.Map<RegionDTO>(responce));
+        }
+        [HttpDelete]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> DeleteRegionAsync(Guid id)
+        {
+            var responce= await regionRepository.DeleteAsync(id);
+            if (responce==null)
+            {
+                return NotFound();
+            }
+            return Ok(mapper.Map<RegionDTO>(responce));
         }
     }
 }
