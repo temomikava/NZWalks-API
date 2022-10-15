@@ -17,9 +17,10 @@ namespace NZWalks_API.Repositories
 
         public IEnumerable<Region> GetAll()
         {
+            List<Region> regions = new List<Region>();
+
             using (var connection = new NpgsqlConnection(_connectionString))
             {
-                List<Region> regions = new List<Region>();
                 try
                 {
                     var cmd = new NpgsqlCommand("getallregions", connection) { CommandType = CommandType.StoredProcedure };
@@ -30,22 +31,20 @@ namespace NZWalks_API.Repositories
                         regions.Add(new Region
                         {
                             Id = (Guid)reader["_id"],
-                            Area = (double)reader["_area"],
+                            Area = (double)(reader["_area"]),
                             Code = (string)reader["_code"],
-                            Lat = (double)reader["_lat"],
-                            Long = (double)reader["_long"],
+                            Lat = (double)(reader["_lat"]),
+                            Long = (double)(reader["_long"]),
                             Name = (string)reader["_name"],
-                            Population = (long)reader["_long"]
+                            Population = (long)(reader["_population"])
                         });
                     }
-
+                    return regions;
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-
-                    throw;
+                    throw new Exception(e.Message);
                 }
-                return regions;
             }
         }
     }
