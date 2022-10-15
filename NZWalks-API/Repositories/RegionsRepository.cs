@@ -45,7 +45,11 @@ namespace NZWalks_API.Repositories
 
         public async Task<Region> DeleteAsync(Guid id)
         {
-            var region=GetAsync(id).Result;
+            var region = GetAsync(id).Result;
+            if (region == null)
+            {
+                return null;
+            }
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 try
@@ -128,6 +132,37 @@ namespace NZWalks_API.Repositories
                     throw new Exception(e.Message);
                 }
             }
+        }
+
+        public async Task<Region> UpdateAsync(Guid id, Region region)
+        {
+            var existingregion = GetAsync(id).Result;
+            if (existingregion == null)
+            {
+                return null;
+            }
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                try
+                {
+                    var cmd = new NpgsqlCommand("updateregion", connection) { CommandType = CommandType.StoredProcedure };
+                    cmd.Parameters.AddWithValue("_id", id);
+                    cmd.Parameters.AddWithValue("_name", region.Name);
+                    cmd.Parameters.AddWithValue("_code", region.Code);
+                    cmd.Parameters.AddWithValue("_area", region.Area);
+                    cmd.Parameters.AddWithValue("_long", region.Long);
+                    cmd.Parameters.AddWithValue("_lat", region.Lat);
+                    cmd.Parameters.AddWithValue("_population", region.Population);
+                    connection.Open();
+                    await cmd.ExecuteNonQueryAsync();
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(e.Message);
+                }
+            }
+            region.Id = existingregion.Id;
+            return region;
         }
     }
 }

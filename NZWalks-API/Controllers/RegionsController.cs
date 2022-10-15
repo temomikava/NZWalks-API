@@ -64,5 +64,27 @@ namespace NZWalks_API.Controllers
             }
             return Ok(mapper.Map<RegionDTO>(responce));
         }
+
+        [HttpPut]
+        [Route("{id:guid}")]
+
+        public async Task<IActionResult> UpadateRegionAsync([FromRoute]Guid id,[FromBody]UpdateRegionRequest updateRegionRequest)
+        {
+            var region = new Region()
+            {
+                Code = updateRegionRequest.Code,
+                Name = updateRegionRequest.Name,
+                Area = updateRegionRequest.Area,
+                Lat = updateRegionRequest.Lat,
+                Long = updateRegionRequest.Long,
+                Population = updateRegionRequest.Population
+            };
+            region= await regionRepository.UpdateAsync(id, region);
+            if (region==null)
+            {
+                return NotFound();
+            }
+            return Ok(mapper.Map<RegionDTO>(region));
+        }
     }
 }
