@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NZWalks_API.Models.Domain;
 using NZWalks_API.Models.DTOs;
 using NZWalks_API.Repositories;
 
@@ -13,28 +14,44 @@ namespace NZWalks_API.Controllers
         private readonly IRegionRepository regionRepository;
         private readonly IMapper mapper;
 
-        public RegionsController(IRegionRepository regionRepository,IMapper mapper)
+        public RegionsController(IRegionRepository regionRepository, IMapper mapper)
         {
             this.regionRepository = regionRepository;
             this.mapper = mapper;
         }
         [HttpGet]
-        public async  Task<IActionResult> GetAllRegionsAsync()
+        public async Task<IActionResult> GetAllRegionsAsync()
         {
             var regionsDTO = mapper.Map<IEnumerable<RegionDTO>>(await regionRepository.GetAllAsync());
             return Ok(regionsDTO);
         }
         [HttpGet]
         [Route("{id:guid}")]
-        public async Task<IActionResult> GetRegionById(Guid id)
+        [ActionName("GetRegionAsync")]
+        public async Task<IActionResult> GetRegionAsync(Guid id)
         {
             var region = await regionRepository.GetAsync(id);
-            if (region==null)
+            if (region == null)
             {
                 return NotFound();
             }
-            var regionDTO=mapper.Map<RegionDTO>(region);
+            var regionDTO = mapper.Map<RegionDTO>(region);
             return Ok(regionDTO);
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddRegionAsync(AddRegionRequest addRegion)
+        {
+            var region = new Region()
+            {
+                Code = addRegion.Code,
+                Name = addRegion.Name,
+                Area = addRegion.Area,
+                Lat = addRegion.Lat,
+                Long = addRegion.Long,
+                Population = addRegion.Population
+            };
+            var responce = await regionRepository.AddRegion(region);
+            return CreatedAtAction(nameof(GetRegionAsync), new { id = responce.Id }, mapper.Map<RegionDTO>(responce));
         }
     }
 }
