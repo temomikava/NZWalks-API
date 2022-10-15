@@ -15,7 +15,7 @@ namespace NZWalks_API.Repositories
             _connectionString = _configuration.GetConnectionString("MyConnection").Trim();
         }
 
-        public IEnumerable<Region> GetAll()
+        public async  Task<IEnumerable<Region>> GetAllAsync()
         {
             List<Region> regions = new List<Region>();
 
@@ -25,8 +25,8 @@ namespace NZWalks_API.Repositories
                 {
                     var cmd = new NpgsqlCommand("getallregions", connection) { CommandType = CommandType.StoredProcedure };
                     connection.Open();
-                    NpgsqlDataReader reader = cmd.ExecuteReader();
-                    while (reader.Read())
+                    NpgsqlDataReader reader =await cmd.ExecuteReaderAsync();
+                    while (reader.ReadAsync().Result)
                     {
                         regions.Add(new Region
                         {

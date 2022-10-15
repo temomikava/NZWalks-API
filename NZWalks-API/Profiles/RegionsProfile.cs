@@ -8,7 +8,7 @@ namespace NZWalks_API.Profiles
     {
         public RegionsProfile()
         {
-            CreateMap<Region, RegionDTO>().ForMember(x => x.Iddddd, y => y.MapFrom(z => z.Id));
+            CreateMap<Region, RegionDTO>().ReverseMap();
         }
     }
 }
