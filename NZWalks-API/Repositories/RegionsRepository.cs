@@ -15,7 +15,7 @@ namespace NZWalks_API.Repositories
             _connectionString = _configuration.GetConnectionString("MyConnection").Trim();
         }
 
-        public async  Task<IEnumerable<Region>> GetAllAsync()
+        public async Task<IEnumerable<Region>> GetAllAsync()
         {
             List<Region> regions = new List<Region>();
 
@@ -25,7 +25,7 @@ namespace NZWalks_API.Repositories
                 {
                     var cmd = new NpgsqlCommand("getallregions", connection) { CommandType = CommandType.StoredProcedure };
                     connection.Open();
-                    NpgsqlDataReader reader =await cmd.ExecuteReaderAsync();
+                    NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
                     while (reader.ReadAsync().Result)
                     {
                         regions.Add(new Region
@@ -46,6 +46,39 @@ namespace NZWalks_API.Repositories
                     throw new Exception(e.Message);
                 }
             }
+        }
+
+        public async Task<Region> GetAsync(Guid id)
+        {
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                var cmd = new NpgsqlCommand("getregionbyid", connection) { CommandType = CommandType.StoredProcedure };
+                cmd.Parameters.AddWithValue("_id", id);
+                connection.Open();
+                NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
+
+                while (reader.ReadAsync().Result)
+                {
+                    return new Region
+                    {
+                        Id = (Guid)reader["__id"],
+                        Area = (double)(reader["_area"]),
+                        Code = (string)reader["_code"],
+                        Lat = (double)(reader["_lat"]),
+                        Long = (double)(reader["_long"]),
+                        Name = (string)reader["_name"],
+                        Population = (long)(reader["_population"])
+                    };
+                }
+
+
+
+                return null;
+
+
+
+            }
+
         }
     }
 }
