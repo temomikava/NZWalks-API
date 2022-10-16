@@ -11,10 +11,10 @@ namespace NZWalks_API.Controllers
     [ApiController]
     public class RegionsController : ControllerBase
     {
-        private readonly IRegionRepository regionRepository;
+        private readonly ISqlRepository<Region> regionRepository;
         private readonly IMapper mapper;
 
-        public RegionsController(IRegionRepository regionRepository, IMapper mapper)
+        public RegionsController(ISqlRepository<Region> regionRepository, IMapper mapper)
         {
             this.regionRepository = regionRepository;
             this.mapper = mapper;
@@ -50,7 +50,7 @@ namespace NZWalks_API.Controllers
                 Long = addRegion.Long,
                 Population = addRegion.Population
             };
-            var responce = await regionRepository.AddRegion(region);
+            var responce = await regionRepository.AddAsync(region);
             return CreatedAtAction(nameof(GetRegionAsync), new { id = responce.Id }, mapper.Map<RegionDTO>(responce));
         }
         [HttpDelete]

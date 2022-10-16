@@ -1,3 +1,4 @@
+using NZWalks_API.Models.Domain;
 using NZWalks_API.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,9 +9,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<IRegionRepository,RegionsRepository>();
-builder.Services.AddScoped<IWalksRepository, WalksRepository>();
-builder.Services.AddScoped<IWalkDifficultyRepo, WalkdifficultyRepo>();
+builder.Services.AddScoped<ISqlRepository<Region>, RegionsRepository>();
+builder.Services.AddScoped<ISqlRepository<Walk>, WalksRepository>();
+builder.Services.AddScoped<ISqlRepository<WalkDifficulty>, WalkdifficultyRepo>();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 var app = builder.Build();

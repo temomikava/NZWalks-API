@@ -4,7 +4,7 @@ using System.Data;
 
 namespace NZWalks_API.Repositories
 {
-    public class RegionsRepository : IRegionRepository
+    public class RegionsRepository :ISqlRepository<Region>
     {
         private readonly IConfiguration _configuration;
         private readonly string _connectionString;
@@ -15,7 +15,7 @@ namespace NZWalks_API.Repositories
             _connectionString = _configuration.GetConnectionString("MyConnection").Trim();
         }
 
-        public async Task<Region> AddRegion(Region region)
+        public async Task<Region> AddAsync(Region region)
         {
             region.Id = Guid.NewGuid();
 

@@ -11,10 +11,10 @@ namespace NZWalks_API.Controllers
     [ApiController]
     public class WalkDifficultyController : ControllerBase
     {
-        private readonly IWalkDifficultyRepo walkDifficultyRepo;
+        private readonly ISqlRepository<WalkDifficulty> walkDifficultyRepo;
         private readonly IMapper mapper;
 
-        public WalkDifficultyController(IWalkDifficultyRepo walkDifficultyRepo, IMapper mapper)
+        public WalkDifficultyController(ISqlRepository<WalkDifficulty> walkDifficultyRepo, IMapper mapper)
         {
             this.walkDifficultyRepo = walkDifficultyRepo;
             this.mapper = mapper;
