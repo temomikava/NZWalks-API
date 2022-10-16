@@ -8,11 +8,15 @@ namespace NZWalks_API.Repositories
     {
         private readonly IConfiguration _configuration;
         private readonly string _connectionString;
+        private readonly IRegionRepository _regionRepository;
+        private readonly IWalkDifficultyRepo _walkDifficultyRepo;
 
-        public WalksRepository(IConfiguration configuration)
+        public WalksRepository(IConfiguration configuration,IRegionRepository region, IWalkDifficultyRepo difficultyRepo)
         {
             _configuration = configuration;
             _connectionString = _configuration.GetConnectionString("MyConnection").Trim();
+            _regionRepository = region;
+            _walkDifficultyRepo = difficultyRepo;
         }
 
         public async Task<Walk> AddAsync(Walk walk)
@@ -65,6 +69,7 @@ namespace NZWalks_API.Repositories
                 var cmd = new NpgsqlCommand("getallwalks", connection) { CommandType = CommandType.StoredProcedure };
                 connection.Open();
                 NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
+                
                 while (await reader.ReadAsync())
                 {
                     walks.Add(new Walk()
@@ -73,7 +78,9 @@ namespace NZWalks_API.Repositories
                         Length = (double)reader["_length"],
                         Name = (string)reader["_name"],
                         RegionId = (Guid)reader["_regionid"],
-                        WalkDifficultyId = (Guid)reader["_walkdifficultyid"]
+                        WalkDifficultyId = (Guid)reader["_walkdifficultyid"],
+                        Region = await _regionRepository.GetAsync((Guid)reader["_regionid"]),
+                        WalkDifficulty=await _walkDifficultyRepo.GetAsync((Guid)reader["_walkdifficultyid"])
                     });
                 }
                 return walks;
@@ -96,7 +103,9 @@ namespace NZWalks_API.Repositories
                         Length = (double)reader["_length"],
                         Name = (string)reader["_name"],
                         RegionId = (Guid)reader["_regionid"],
-                        WalkDifficultyId = (Guid)reader["_walkdifficultyid"]
+                        WalkDifficultyId = (Guid)reader["_walkdifficultyid"],
+                        Region = await _regionRepository.GetAsync((Guid)reader["_regionid"]),
+                        WalkDifficulty = await _walkDifficultyRepo.GetAsync((Guid)reader["_walkdifficultyid"])
                     };
                 }
                 return null;

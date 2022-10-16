@@ -91,6 +91,7 @@ namespace NZWalks_API.Repositories
                             Population = (long)(reader["_population"])
                         });
                     }
+                    
                     return regions;
                 }
                 catch (Exception e)

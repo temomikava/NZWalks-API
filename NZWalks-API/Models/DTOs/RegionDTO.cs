@@ -1,4 +1,5 @@
-﻿namespace NZWalks_API.Models.DTOs
+﻿
+namespace NZWalks_API.Models.DTOs
 {
     public class RegionDTO
     {
@@ -9,5 +10,7 @@
         public double Lat { get; set; }
         public double Long { get; set; }
         public long Population { get; set; }
+        public IEnumerable<WalkDTO> Walks { get; set; }
+
     }
 }

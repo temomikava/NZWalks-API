@@ -4,11 +4,12 @@ using NZWalks_API.Models.DTOs;
 
 namespace NZWalks_API.Profiles
 {
-    public class WaksProfile:Profile
+    public class WalksProfile:Profile
     {
-        public WaksProfile()
+        public WalksProfile()
         {
             CreateMap<Walk,WalkDTO>().ReverseMap();
+            CreateMap<WalkDifficulty,WalkDifficultyDTO>().ReverseMap();
         }
     }
 }
