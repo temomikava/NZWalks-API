@@ -1,11 +1,11 @@
 ﻿namespace NZWalks_API.Repositories
 {
-    public interface ISqlRepository<T>
+    public interface ISqlRepository<TEntity,TKey>
     {
-        Task<IEnumerable<T>> GetAllAsync();
-        Task<T> GetAsync(Guid id);
-        Task<T> AddAsync(T entity);
-        Task<T> DeleteAsync(Guid id);
-        Task<T> UpdateAsync(Guid id, T entity);
+        Task<IEnumerable<TEntity>> GetAllAsync();
+        Task<TEntity> GetAsync(TKey id);
+        Task<TEntity> AddAsync(TEntity entity);
+        Task<TEntity> DeleteAsync(TKey id);
+        Task<TEntity> UpdateAsync(TKey id, TEntity entity);
     }
 }

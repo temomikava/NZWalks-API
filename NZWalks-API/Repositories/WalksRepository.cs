@@ -4,14 +4,14 @@ using System.Data;
 
 namespace NZWalks_API.Repositories
 {
-    public class WalksRepository : ISqlRepository<Walk>
+    public class WalksRepository : ISqlRepository<Walk,Guid>
     {
         private readonly IConfiguration _configuration;
         private readonly string _connectionString;
-        private readonly ISqlRepository<Region> _regionRepository;
-        private readonly ISqlRepository<WalkDifficulty> _walkDifficultyRepo;
+        private readonly ISqlRepository<Region,Guid> _regionRepository;
+        private readonly ISqlRepository<WalkDifficulty,Guid> _walkDifficultyRepo;
 
-        public WalksRepository(IConfiguration configuration,ISqlRepository<Region> region, ISqlRepository<WalkDifficulty> difficultyRepo)
+        public WalksRepository(IConfiguration configuration,ISqlRepository<Region,Guid> region, ISqlRepository<WalkDifficulty,Guid> difficultyRepo)
         {
             _configuration = configuration;
             _connectionString = _configuration.GetConnectionString("MyConnection").Trim();

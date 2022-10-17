@@ -4,7 +4,7 @@ using System.Data;
 
 namespace NZWalks_API.Repositories
 {
-    public class WalkdifficultyRepo : ISqlRepository<WalkDifficulty>
+    public class WalkdifficultyRepo : ISqlRepository<WalkDifficulty,Guid>
     {
         private readonly IConfiguration _configuration;
         private readonly string _connectionString;

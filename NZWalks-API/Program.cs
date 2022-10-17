@@ -9,9 +9,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<ISqlRepository<Region>, RegionsRepository>();
-builder.Services.AddScoped<ISqlRepository<Walk>, WalksRepository>();
-builder.Services.AddScoped<ISqlRepository<WalkDifficulty>, WalkdifficultyRepo>();
+builder.Services.AddScoped<ISqlRepository<Region,Guid>, RegionsRepository>();
+builder.Services.AddScoped<ISqlRepository<Walk,Guid>, WalksRepository>();
+builder.Services.AddScoped<ISqlRepository<WalkDifficulty,Guid>, WalkdifficultyRepo>();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 var app = builder.Build();

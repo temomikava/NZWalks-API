@@ -11,10 +11,10 @@ namespace NZWalks_API.Controllers
     [ApiController]
     public class WalkDifficultyController : ControllerBase
     {
-        private readonly ISqlRepository<WalkDifficulty> walkDifficultyRepo;
+        private readonly ISqlRepository<WalkDifficulty,Guid> walkDifficultyRepo;
         private readonly IMapper mapper;
 
-        public WalkDifficultyController(ISqlRepository<WalkDifficulty> walkDifficultyRepo, IMapper mapper)
+        public WalkDifficultyController(ISqlRepository<WalkDifficulty,Guid> walkDifficultyRepo, IMapper mapper)
         {
             this.walkDifficultyRepo = walkDifficultyRepo;
             this.mapper = mapper;
@@ -23,6 +23,10 @@ namespace NZWalks_API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddWalkDifficultyAsync([FromBody] AddWalkdiffucultyRequest request)
         {
+            if (!ValidateAddWalkDifficultyAsync(request))
+            {
+                return BadRequest(ModelState);
+            }
             var walkDifficulty = new WalkDifficulty()
             {
                 Code = request.Code
@@ -67,6 +71,10 @@ namespace NZWalks_API.Controllers
         [Route("{id:guid}")]
         public async Task<IActionResult> UpdateWalkDifficultyAsync(Guid id, UpdateWalkDiffucultyRequest request)
         {
+            if (!ValidateUpdateWalkDifficultyAsync(request))
+            {
+                return BadRequest(ModelState);
+            }
             var walkDifficulty = new WalkDifficulty()
             {
                 Code = request.Code
@@ -78,5 +86,49 @@ namespace NZWalks_API.Controllers
             }
             return Ok(mapper.Map<WalkDifficultyDTO>(responce));
         }
+
+        #region
+
+        private bool ValidateAddWalkDifficultyAsync(AddWalkdiffucultyRequest addWalkdiffucultyRequest)
+        {
+            if (addWalkdiffucultyRequest == null)
+            {
+                ModelState.AddModelError(nameof(addWalkdiffucultyRequest),
+                    $"{nameof(addWalkdiffucultyRequest)} Data is required.");
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(addWalkdiffucultyRequest.Code))
+            {
+                ModelState.AddModelError(nameof(addWalkdiffucultyRequest.Code),
+                    $"{nameof(addWalkdiffucultyRequest.Code)} cannot be null or emmpty or white space.");
+            }
+            if (ModelState.ErrorCount > 0)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private bool ValidateUpdateWalkDifficultyAsync(UpdateWalkDiffucultyRequest updateRegionRequest)
+        {
+            if (updateRegionRequest == null)
+            {
+                ModelState.AddModelError(nameof(updateRegionRequest),
+                    $"{nameof(updateRegionRequest)} Data is required.");
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(updateRegionRequest.Code))
+            {
+                ModelState.AddModelError(nameof(updateRegionRequest.Code),
+                    $"{nameof(updateRegionRequest.Code)} cannot be null or emmpty or white space.");
+            }
+            if (ModelState.ErrorCount > 0)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        #endregion
     }
 }

@@ -4,7 +4,7 @@ using System.Data;
 
 namespace NZWalks_API.Repositories
 {
-    public class RegionsRepository :ISqlRepository<Region>
+    public class RegionsRepository :ISqlRepository<Region,Guid>
     {
         private readonly IConfiguration _configuration;
         private readonly string _connectionString;
