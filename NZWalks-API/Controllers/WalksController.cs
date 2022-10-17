@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NZWalks_API.Models.Domain;
@@ -25,7 +26,29 @@ namespace NZWalks_API.Controllers
             this.walkDifficultyRepository = walkDifficultyRepository;
         }
 
+
+        [HttpGet]
+        [Route("{id:guid}")]
+        [Authorize(Roles = "reader")]
+        public async Task<IActionResult> GetWalkAsync([FromRoute] Guid id)
+        {
+            var walk = await walksRepository.GetAsync(id);
+            if (walk == null)
+            {
+                return NotFound();
+            }
+            return Ok(mapper.Map<WalkDTO>(walk));
+        }
+        [HttpGet]
+        [Authorize(Roles = "reader")]
+        public async Task<IActionResult> GetAllWalks()
+        {
+            var responce = await walksRepository.GetAllAsync();
+            return Ok(mapper.Map<IEnumerable<WalkDTO>>(responce));
+        }
+
         [HttpPost]
+        [Authorize(Roles = "writer")]
         public async Task<IActionResult> AddWalkAsync([FromBody] AddWalkRequest addWalkRequest)
         {
             if (! await ValidateAddWalkAsync(addWalkRequest))
@@ -43,27 +66,10 @@ namespace NZWalks_API.Controllers
             return Ok(mapper.Map<WalkDTO>(responce));
         }
 
-        [HttpGet]
-        [Route("{id:guid}")]
-        public async Task<IActionResult> GetWalkAsync([FromRoute] Guid id)
-        {
-            var walk = await walksRepository.GetAsync(id);
-            if (walk == null)
-            {
-                return NotFound();
-            }
-            return Ok(mapper.Map<WalkDTO>(walk));
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetAllWalks()
-        {
-            var responce = await walksRepository.GetAllAsync();
-            return Ok(mapper.Map<IEnumerable<WalkDTO>>(responce));
-        }
 
         [HttpDelete]
         [Route("{id:guid}")]
+        [Authorize(Roles = "writer")]
         public async Task<IActionResult> DeleteWalkAsync([FromRoute] Guid id)
         {
             var responce = await walksRepository.DeleteAsync(id);
@@ -76,6 +82,7 @@ namespace NZWalks_API.Controllers
 
         [HttpPut]
         [Route("{id:guid}")]
+        [Authorize(Roles = "writer")]
         public async Task<IActionResult> UpdateWalkAsync([FromRoute] Guid id, [FromBody] UpdateWalkRequest updateWalkRequest)
         {
             if (!await ValidateUpdateWalkAsyc(updateWalkRequest))
