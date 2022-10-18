@@ -39,7 +39,7 @@ builder.Services.AddSwaggerGen(opt =>
 builder.Services.AddScoped<ISqlRepository<Region,Guid>, RegionsRepository>();
 builder.Services.AddScoped<ISqlRepository<Walk,Guid>, WalksRepository>();
 builder.Services.AddScoped<ISqlRepository<WalkDifficulty,Guid>, WalkdifficultyRepo>();
-builder.Services.AddSingleton<IUserRepository, StaticUserRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITokenHandler, TokenHandler>();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddFluentValidation(options => options.RegisterValidatorsFromAssemblyContaining<Program>());

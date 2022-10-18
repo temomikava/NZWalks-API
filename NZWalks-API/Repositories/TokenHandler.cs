@@ -24,7 +24,7 @@ namespace NZWalks_API.Repositories
 
             user.Roles.ForEach((role) =>
             {
-                claims.Add(new Claim(ClaimTypes.Role,role));
+                claims.Add(new Claim(ClaimTypes.Role, role));
 
             });
 
